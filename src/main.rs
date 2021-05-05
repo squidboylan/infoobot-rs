@@ -1,11 +1,9 @@
-use sqlx::Connection;
 use std::env;
-use std::sync::Arc;
-use tokio::sync::RwLock;
 
 use serenity::prelude::*;
 
 mod handler;
+mod message;
 
 #[tokio::main]
 async fn main() {
@@ -14,14 +12,12 @@ async fn main() {
 
     // Configure the client with your Discord bot token in the environment.
     let token = env::var("DISCORD_TOKEN").expect("Please set DISCORD_TOKEN");
-    let username = env::var("IMGFLIP_USERNAME").expect("Please set IMGFLIP_USERNAME");
-    let password = env::var("IMGFLIP_PASSWORD").expect("Please set IMGFLIP_PASSWORD");
 
     // Create a new instance of the Client, logging in as a bot. This will
     // automatically prepend your bot token with "Bot ", which is a requirement
     // by Discord for bot users.
     let mut client = Client::builder(&token)
-        .event_handler(handler::Handler { pool })
+        .event_handler(handler::Handler::new(pool))
         .await
         .expect("Err creating client");
 
